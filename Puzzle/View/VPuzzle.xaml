@@ -1,0 +1,111 @@
+﻿<UserControl x:Class="Puzzle.View.VPuzzle"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Puzzle.ViewModel"
+             xmlns:lc="clr-namespace:Puzzle.Controls"
+			xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"	
+			xmlns:il="clr-namespace:Microsoft.Expression.Interactivity.Layout;assembly=Microsoft.Expression.Interactions"        
+			 xmlns:xc="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+			 d:DataContext="{d:DesignInstance local:VMPuzzle, IsDesignTimeCreatable=False}"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300"
+			 PreviewKeyDown="Puzzle_PreviewKeyDown"
+			 >
+    <UserControl.Resources>
+
+        <ItemsPanelTemplate x:Key="ContainersItemsPanelTemplate1">
+            <Grid >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                </Grid.RowDefinitions>
+                <i:Interaction.Behaviors>
+                    <il:FluidMoveBehavior AppliesTo="Children" Duration="0:0:0.6" >
+                        <il:FluidMoveBehavior.EaseX>
+                            <!--<BackEase EasingMode="EaseInOut"/>-->
+                            <ElasticEase EasingMode="EaseOut" Oscillations="2" Springiness="5"/>
+                        </il:FluidMoveBehavior.EaseX>
+                        <il:FluidMoveBehavior.EaseY>
+                            <!--<BackEase EasingMode="EaseInOut"/>-->
+                            <ElasticEase EasingMode="EaseOut" Oscillations="2" Springiness="5"/>
+                        </il:FluidMoveBehavior.EaseY>
+                    </il:FluidMoveBehavior>
+                </i:Interaction.Behaviors>
+            </Grid>
+        </ItemsPanelTemplate>
+
+        <Style x:Key="ContainersListViewItemStyle1" TargetType="{x:Type ListBoxItem}">
+            <Setter Property="Grid.Column" Value="{Binding X}" />
+            <Setter Property="Grid.Row"    Value="{Binding Y}" />
+
+            <!--disable ListBox highlighting-->
+            <Setter Property="IsSelected" Value="{Binding Content.IsSelected, Mode=TwoWay, RelativeSource={RelativeSource Self}}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <ContentPresenter/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <!--disable ListBox highlighting-->
+
+
+        </Style>
+
+        <DataTemplate x:Key="ContainerDataTemplate">
+            <!--<Button x:Name="btnContainerInfo" Content="{Binding Number}" 
+					 Command="{Binding Clicked}" CommandParameter="{Binding}"  />-->
+			<lc:PuzzleButton></lc:PuzzleButton>
+        </DataTemplate>
+
+    </UserControl.Resources>
+
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="70*"/>
+            <ColumnDefinition Width="100"/>
+        </Grid.ColumnDefinitions>
+        <ListBox 
+        ItemsSource="{Binding Numbers}" 
+        ItemTemplate="{DynamicResource ContainerDataTemplate}" 
+        ItemsPanel="{DynamicResource ContainersItemsPanelTemplate1}"
+        ItemContainerStyle="{DynamicResource ContainersListViewItemStyle1}"
+		HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Grid.ColumnSpan="2"/>
+		<StackPanel Grid.Column="1" Background="Gray">
+			<Button  Content="Reset" Command="{Binding Reset}" Margin="5"/>
+			<Button  Content="{Binding ScrambleButtonTitle}" Command="{Binding Scramble}" Margin="5" />
+			<TextBlock TextWrapping="Wrap" Margin="5">Number of scrambles :</TextBlock>
+			<xc:IntegerUpDown Text="{Binding NumberOfScrambles, UpdateSourceTrigger=PropertyChanged}" Margin="5" Increment="10" Minimum="1"></xc:IntegerUpDown>
+			<TextBlock TextWrapping="Wrap" Margin="5">Wait time(ms) :</TextBlock>
+			<xc:IntegerUpDown Text="{Binding WaitBetweenEachMoveMilliseconds, UpdateSourceTrigger=PropertyChanged}" Increment="50" Margin="5" Minimum="10"></xc:IntegerUpDown>
+			<Button  Content="{Binding SolveButtonTitle}" Command="{Binding Solve}" Margin="5"  />
+			<TextBlock TextWrapping="Wrap" Margin="5">Total Displacement Score :</TextBlock>
+			<TextBlock TextWrapping="Wrap" Margin="5" Text="{Binding TotalDisplacement}"></TextBlock>
+		</StackPanel>
+    </Grid>
+
+</UserControl>
